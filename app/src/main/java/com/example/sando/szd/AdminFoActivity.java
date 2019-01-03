@@ -64,7 +64,12 @@ public class AdminFoActivity extends AppCompatActivity {
         lista.setText(szoveg);
     }
     public void rendelesek_listaja(){
+        Cursor adatok = db.getAdatok("LeadottRendeles_tabla");
         String szoveg = "Rendelések listája: \n";
+        while (adatok.moveToNext()){
+            szoveg += " ÉTEL_ID: ["+adatok.getString(1)+"]\n FELH_ID: [" +adatok.getString(2) +"]\n " +
+                    "DÁTUM: [" + adatok.getString(3) +"]\n\n";
+        }
 
         lista.setText(szoveg);
     }

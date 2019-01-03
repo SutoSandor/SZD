@@ -57,6 +57,7 @@ public class BeActivity extends AppCompatActivity {
                         letezo_felhasznalo = true;
                         if (Objects.equals(adatok.getString(2), jelszo)) {
                             helyes_jelszo = true;
+                            db.Bejelentkezett_profil_id = adatok.getInt(0);
                             if (Objects.equals(adatok.getString(3), "admin")){
                                 admin_statusz = true;
                             }
@@ -68,13 +69,13 @@ public class BeActivity extends AppCompatActivity {
                 if (admin_statusz) {
                     Intent i = new Intent(BeActivity.this, AdminFoActivity.class);
                     startActivity(i);
-                    Toast.makeText(this, "Sikeres bejelentkezés adminisztrátorként", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Sikeres bejelentkezés adminisztrátorként " + db.Bejelentkezett_profil_id, Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 else{
                     Intent i = new Intent(BeActivity.this, FoOldal.class);
                     startActivity(i);
-                    Toast.makeText(this, "Sikeres bejelentkezés", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Sikeres bejelentkezés "  + db.Bejelentkezett_profil_id, Toast.LENGTH_SHORT).show();
                     finish();
                 }
             } else if (!letezo_felhasznalo) {
