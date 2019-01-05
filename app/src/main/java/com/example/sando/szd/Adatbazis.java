@@ -59,7 +59,7 @@ public class Adatbazis extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(FELH_COL_2, felhasznalonev);
         contentValues.put(FELH_COL_3, jelszo);
-        contentValues.put(FELH_COL_4, "felhasznalo");
+        contentValues.put(FELH_COL_4, "admin");
 
         long eredmeny = db.insert(FELH_TABLENAME, null, contentValues);
 
