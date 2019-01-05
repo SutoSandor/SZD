@@ -117,6 +117,23 @@ public class Adatbazis extends SQLiteOpenHelper {
         Cursor adatok = db.rawQuery("Select * from " + tablanev + " WHERE " + feltetel + " = " + ertek,null);
         return adatok;
     }
+    public boolean EtelUpdate(String id,String nev, String leiras, String ar, String url){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(REND_COL_2, nev);
+        contentValues.put(REND_COL_3, ar);
+        contentValues.put(REND_COL_4, url);
+        contentValues.put(REND_COL_5, leiras);
+
+        long eredmeny = db.update(REND_TABLENAME,contentValues,"id="+id,null);
+
+        if (eredmeny == -1){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 
 
 }

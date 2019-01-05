@@ -34,9 +34,20 @@
             android:layout_height="wrap_content"
             android:text="ÉTEL FELVÉTEL"
             android:id="@+id/etel_felvetel_intent"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ÉTEL UPDATE"
+            android:id="@+id/etelek_lista"/>
     </LinearLayout>
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/lista"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/update"></LinearLayout>
+
 </LinearLayout>

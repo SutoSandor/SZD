@@ -2,13 +2,18 @@ package com.example.sando.szd;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,10 +23,9 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-public class RendelesActivity extends AppCompatActivity {
+public class RendelesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private int rendeles_mennyisege = 1;
-    private DrawerLayout drawer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         final Adatbazis db = new Adatbazis(this);
@@ -29,15 +33,20 @@ public class RendelesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rendeles);
         LinearLayout kepek_layout = (LinearLayout)findViewById(R.id.kepek_layout);
         final Cursor adatok = db.getAdatok("Rendelesek_tabla");
-
+        //menu
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
 
-        drawer = findViewById(R.id.drawer_layout);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawer, toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawer,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
 
         while (adatok.moveToNext()){
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -124,5 +133,40 @@ public class RendelesActivity extends AppCompatActivity {
             });
         }
 
+    }
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        if (menuItem.getItemId() == R.id.nav_rendel){
+            startRendeles();
+        }
+        else if(menuItem.getItemId() == R.id.nav_foglal){
+
+        }
+        else if(menuItem.getItemId() == R.id.nav_kapcsolat){
+            startKapcsolat();
+        }
+        else if(menuItem.getItemId() == R.id.nav_login){
+            startBejelentkezes();
+        }
+
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    public void startRendeles(){
+        Intent i = new Intent(this,RendelesActivity.class);
+        startActivity(i);
+        finish();
+    }
+    public void startKapcsolat(){
+        Intent i = new Intent(this,KapcsolatActivity.class);
+        startActivity(i);
+        finish();
+    }
+    public void startBejelentkezes(){
+        Intent intent = new Intent(this, BeActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

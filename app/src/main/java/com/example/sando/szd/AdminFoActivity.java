@@ -1,18 +1,30 @@
 package com.example.sando.szd;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 public class AdminFoActivity extends AppCompatActivity {
 
     private TextView lista;
-    private Button lista_felhasznalok, lista_rendelesek, lista_foglalasok, etel_felvetel;
+    private Button lista_felhasznalok, lista_rendelesek, lista_foglalasok, etel_felvetel, lista_etelek;
     private Adatbazis db;
+    private EditText nev,leiras,ar,kep;
+    private View view;
+    private LinearLayout layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,9 +51,34 @@ public class AdminFoActivity extends AppCompatActivity {
         etel_felvetel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(AdminFoActivity.this, UjEtelActivity.class);
-                startActivity(i);
-                finish();
+
+                view = getLayoutInflater().inflate(R.layout.dialog_ujetel, null);
+                nev = view.findViewById(R.id.nev);
+                leiras = view.findViewById(R.id.leiras);
+                ar = view.findViewById(R.id.ar);
+                kep = view.findViewById(R.id.kep);
+                AlertDialog.Builder builder = new AlertDialog.Builder(AdminFoActivity.this);
+                builder.setView(view);
+                builder.setPositiveButton("Felvesz", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button
+                        ujetel();
+                    }
+                });
+                builder.setNegativeButton("Mégsem", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialo
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+        lista_etelek.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etelupdate();
+                Toast.makeText(AdminFoActivity.this, "faszom", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -52,9 +89,16 @@ public class AdminFoActivity extends AppCompatActivity {
         lista_foglalasok = findViewById(R.id.lista_foglalasok);
         lista_rendelesek = findViewById(R.id.lista_rendelesek);
         etel_felvetel = findViewById(R.id.etel_felvetel_intent);
+        lista_etelek = findViewById(R.id.etelek_lista);
         db = new Adatbazis(this);
+        layout = findViewById(R.id.update);
+
+
+
     }
     public void felhasznalok_listaja(){
+        layout.removeAllViews();
+        lista.setText("");
         Cursor adatok = db.getAdatok("Felhasznalok_tabla");
         String szoveg = "Felhasnálók listája: \n";
         while (adatok.moveToNext()){
@@ -77,5 +121,82 @@ public class AdminFoActivity extends AppCompatActivity {
         String szoveg = "Asztalfoglalások listája: \n";
 
         lista.setText(szoveg);
+    }
+    public void ujetel(){
+        String etel_nev = nev.getText().toString();
+        String etel_leiras = leiras.getText().toString();
+        String etel_ar = ar.getText().toString();
+        String etel_kep = kep.getText().toString();
+
+
+        boolean eredmeny = db.Uj_Etel(etel_nev,etel_leiras,etel_ar,etel_kep);
+        if (eredmeny){
+            Toast.makeText(this, "Sikeres felvétel!", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(AdminFoActivity.this, RendelesActivity.class);
+            startActivity(i);
+            finish();
+        }
+        else{
+            Toast.makeText(this, "Sikertelen felvétel!", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public void etelupdate(){
+        final Cursor adatok = db.getAdatok("Rendelesek_tabla");
+        layout.removeAllViews();
+        lista.setText("");
+        while (adatok.moveToNext()){
+
+            final LinearLayout ll = new LinearLayout(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            ll.setOrientation(LinearLayout.VERTICAL);
+            ll.setLayoutParams(params);
+            TextView tv = new TextView(this);
+            tv.setLayoutParams(params);
+            tv.setText(adatok.getString(1)+"\n" + adatok.getString(2)+"\n" + adatok.getString(3) +"\n" + adatok.getString(4)+"\n\n");
+            ll.addView(tv);
+            ll.setId(adatok.getInt(0));
+            layout.addView(ll);
+            ll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    View dialog = getLayoutInflater().inflate(R.layout.etel_update, null);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AdminFoActivity.this);
+                    builder.setView(dialog);
+
+                    final EditText update_nev, update_leiras, update_ar, update_url;
+                    update_nev = dialog.findViewById(R.id.update_nev);
+                    update_leiras = dialog.findViewById(R.id.update_leiras);
+                    update_ar = dialog.findViewById(R.id.update_ar);
+                    update_url = dialog.findViewById(R.id.update_url);
+                    final Cursor adatok_dialog = db.getAdatokWHERE("Rendelesek_tabla","ID", String.valueOf(ll.getId()));
+                    while (adatok_dialog.moveToNext()){
+                        update_nev.setText(adatok_dialog.getString(1));
+                        update_leiras.setText(adatok_dialog.getString(4));
+                        update_ar.setText(adatok_dialog.getString(2));
+                        update_url.setText(adatok_dialog.getString(3));
+                    }
+                    builder.setPositiveButton("UPDATE", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            if (db.EtelUpdate(String.valueOf(ll.getId()),update_nev.getText().toString(),update_leiras.getText().toString(),update_ar.getText().toString(),update_url.getText().toString())){
+                                Toast.makeText(AdminFoActivity.this, "Sikerült more", Toast.LENGTH_SHORT).show();
+                                etelupdate();
+                            }
+                            else{
+                                Toast.makeText(AdminFoActivity.this, "bajvan", Toast.LENGTH_SHORT).show();
+                            }
+                            
+                        }
+                    });
+                    builder.setNegativeButton("Mégsem", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+            });
+        }
+
     }
 }
