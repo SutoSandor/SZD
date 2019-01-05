@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AdminFoActivity extends AppCompatActivity {
 
@@ -29,6 +31,7 @@ public class AdminFoActivity extends AppCompatActivity {
     private EditText nev,leiras,ar,kep;
     private View view;
     private LinearLayout layout;
+    public static final String URL_REGEX = "^((https?|ftp)://|(www|ftp)\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +69,16 @@ public class AdminFoActivity extends AppCompatActivity {
                 builder.setPositiveButton("Felvesz", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User clicked OK button
+                        String etel_kep = kep.getText().toString();
+                        Pattern p = Pattern.compile(URL_REGEX);
+                        Matcher m = p.matcher(etel_kep);//replace with string to compare
+
+                        if(m.find()){
                         ujetel();
+                        }
+                        else{
+                            Toast.makeText(AdminFoActivity.this, "Hibás kép URL", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 builder.setNegativeButton("Mégsem", new DialogInterface.OnClickListener() {
@@ -175,22 +187,25 @@ public class AdminFoActivity extends AppCompatActivity {
         lista.setText(szoveg);
     }
     public void ujetel(){
+
         String etel_nev = nev.getText().toString();
         String etel_leiras = leiras.getText().toString();
         String etel_ar = ar.getText().toString();
         String etel_kep = kep.getText().toString();
 
 
-        boolean eredmeny = db.Uj_Etel(etel_nev,etel_leiras,etel_ar,etel_kep);
-        if (eredmeny){
-            Toast.makeText(this, "Sikeres felvétel!", Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(AdminFoActivity.this, RendelesActivity.class);
-            startActivity(i);
-            finish();
-        }
-        else{
-            Toast.makeText(this, "Sikertelen felvétel!", Toast.LENGTH_SHORT).show();
-        }
+
+            boolean eredmeny = db.Uj_Etel(etel_nev,etel_leiras,etel_ar,etel_kep);
+            if (eredmeny){
+                Toast.makeText(this, "Sikeres felvétel!", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(AdminFoActivity.this, RendelesActivity.class);
+                startActivity(i);
+                finish();
+            }
+            else{
+                Toast.makeText(this, "Sikertelen felvétel!", Toast.LENGTH_SHORT).show();
+            }
+
     }
     public void etelupdate(){
         final Cursor adatok = db.getAdatok("Rendelesek_tabla");
