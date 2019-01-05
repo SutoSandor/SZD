@@ -59,7 +59,7 @@ public class Adatbazis extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(FELH_COL_2, felhasznalonev);
         contentValues.put(FELH_COL_3, jelszo);
-        contentValues.put(FELH_COL_4, "admin");
+        contentValues.put(FELH_COL_4, "felhasznalo");
 
         long eredmeny = db.insert(FELH_TABLENAME, null, contentValues);
 
@@ -126,6 +126,20 @@ public class Adatbazis extends SQLiteOpenHelper {
         contentValues.put(REND_COL_5, leiras);
 
         long eredmeny = db.update(REND_TABLENAME,contentValues,"id="+id,null);
+
+        if (eredmeny == -1){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+    public boolean jogosultsagUpdate(String id,String kivantJog){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(FELH_COL_4, kivantJog);
+
+        long eredmeny = db.update(FELH_TABLENAME,contentValues,"id="+id,null);
 
         if (eredmeny == -1){
             return false;

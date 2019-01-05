@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+
+import java.util.Objects;
 
 public class AdminFoActivity extends AppCompatActivity {
 
@@ -78,7 +82,6 @@ public class AdminFoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 etelupdate();
-                Toast.makeText(AdminFoActivity.this, "faszom", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -99,15 +102,62 @@ public class AdminFoActivity extends AppCompatActivity {
     public void felhasznalok_listaja(){
         layout.removeAllViews();
         lista.setText("");
-        Cursor adatok = db.getAdatok("Felhasznalok_tabla");
+        final Cursor adatok = db.getAdatok("Felhasznalok_tabla");
         String szoveg = "Felhasnálók listája: \n";
         while (adatok.moveToNext()){
-            szoveg += " ID: ["+adatok.getString(0)+"]\n Felhasználónév: [" +adatok.getString(1) +"]\n " +
+            final LinearLayout ll = new LinearLayout(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            ll.setOrientation(LinearLayout.HORIZONTAL);
+            ll.setLayoutParams(params);
+            params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            TextView tv = new TextView(this);
+            tv.setLayoutParams(params);
+            szoveg = " ID: ["+adatok.getString(0)+"]\n Felhasználónév: [" +adatok.getString(1) +"]\n " +
                       "Jelszó: [" + adatok.getString(2) +"]\n Jogosultság: [" + adatok.getString(3) +"]\n\n";
+            tv.setText(szoveg);
+            tv.setPadding(100,0,100,0);
+            final Button adminna_tesz = new Button(this);
+            adminna_tesz.setId(adatok.getInt(0));
+            adminna_tesz.setLayoutParams(params);
+            adminna_tesz.setGravity(Gravity.CENTER);
+            if (Objects.equals(adatok.getString(3), "felhasznalo")){
+                adminna_tesz.setText("Legyen admin");
+            }
+            else {
+                adminna_tesz.setText("Legyen felhasználó");
+            }
+            ll.addView(tv);
+            ll.addView(adminna_tesz);
+            layout.addView(ll);
+            adminna_tesz.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Cursor adatok2 = db.getAdatokWHERE("Felhasznalok_tabla","id", String.valueOf(adminna_tesz.getId()));
+                    while (adatok2.moveToNext()) {
+                        if (Objects.equals(adatok2.getString(3), "felhasznalo")) {
+                            if (db.jogosultsagUpdate(adminna_tesz.getId() + "", "admin")){
+                                Toast.makeText(AdminFoActivity.this, "Sikerült dik", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(AdminFoActivity.this, "szar", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            if(db.jogosultsagUpdate(adminna_tesz.getId() + "", "felhasznalo")){
+                                Toast.makeText(AdminFoActivity.this, "Sikerült dik", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(AdminFoActivity.this, "szar", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        felhasznalok_listaja();
+                    }
+                }
+            });
         }
-        lista.setText(szoveg);
     }
     public void rendelesek_listaja(){
+        layout.removeAllViews();
+        lista.setText("");
         Cursor adatok = db.getAdatok("LeadottRendeles_tabla");
         String szoveg = "Rendelések listája: \n";
         while (adatok.moveToNext()){
@@ -118,6 +168,8 @@ public class AdminFoActivity extends AppCompatActivity {
         lista.setText(szoveg);
     }
     public void foglalasok_listaja(){
+        layout.removeAllViews();
+        lista.setText("");
         String szoveg = "Asztalfoglalások listája: \n";
 
         lista.setText(szoveg);
