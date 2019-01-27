@@ -9,18 +9,20 @@
     android:id="@+id/drawer_layout"
     tools:openDrawer="start"
     android:fitsSystemWindows="true">
-
-<LinearLayout
-    android:orientation="vertical"
-    android:id="@+id/kepek_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".RendelesActivity"
-    android:paddingTop="60dp">
-
-</LinearLayout>
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/kepek_layout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".RendelesActivity"
+        android:paddingTop="60dp">
+    </LinearLayout>
+</ScrollView>
     <include layout="@layout/swipe_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></include>

@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,17 +69,13 @@ public class AdminFoActivity extends AppCompatActivity {
                 builder.setView(view);
                 builder.setPositiveButton("Felvesz", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // User clicked OK button
-                        String etel_kep = kep.getText().toString();
-                        Pattern p = Pattern.compile(URL_REGEX);
-                        Matcher m = p.matcher(etel_kep);//replace with string to compare
 
-                        if(m.find()){
-                        ujetel();
-                        }
-                        else{
-                            Toast.makeText(AdminFoActivity.this, "Hibás kép URL", Toast.LENGTH_SHORT).show();
-                        }
+
+                            // User clicked OK button
+
+
+
+
                     }
                 });
                 builder.setNegativeButton("Mégsem", new DialogInterface.OnClickListener() {
@@ -86,8 +83,35 @@ public class AdminFoActivity extends AppCompatActivity {
                         // User cancelled the dialo
                     }
                 });
-                AlertDialog dialog = builder.create();
+                final AlertDialog dialog = builder.create();
                 dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        String etel_kep = kep.getText().toString();
+                        Pattern p = Pattern.compile(URL_REGEX);
+                        Matcher m = p.matcher(etel_kep);//replace with string to compare
+                        //Do stuff, possibly set wantToCloseDialog to true then...
+                        if(!(nev.getText().toString().equals(""))){
+                            dialog.dismiss();
+                            Toast.makeText(AdminFoActivity.this, "Sikeres", Toast.LENGTH_SHORT).show();
+
+                            if(m.find()){
+                                ujetel();
+                            }
+                            else{
+                                Toast.makeText(AdminFoActivity.this, "Hibás kép URL", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        else{
+                            Toast.makeText(AdminFoActivity.this, "aspoidiqid", Toast.LENGTH_SHORT).show();
+                        }
+
+                        //else dialog stays open. Make sure you have an obvious way to close the dialog especially if you set cancellable to false.
+                    }
+                });
             }
         });
         lista_etelek.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +120,6 @@ public class AdminFoActivity extends AppCompatActivity {
                 etelupdate();
             }
         });
-
     }
     public void init(){
         lista = findViewById(R.id.lista);
@@ -107,7 +130,7 @@ public class AdminFoActivity extends AppCompatActivity {
         lista_etelek = findViewById(R.id.etelek_lista);
         db = new Adatbazis(this);
         layout = findViewById(R.id.update);
-
+        lista.setMovementMethod(new ScrollingMovementMethod());
 
 
     }
@@ -247,6 +270,7 @@ public class AdminFoActivity extends AppCompatActivity {
                             if (db.EtelUpdate(String.valueOf(ll.getId()),update_nev.getText().toString(),update_leiras.getText().toString(),update_ar.getText().toString(),update_url.getText().toString())){
                                 Toast.makeText(AdminFoActivity.this, "Sikerült more", Toast.LENGTH_SHORT).show();
                                 etelupdate();
+
                             }
                             else{
                                 Toast.makeText(AdminFoActivity.this, "bajvan", Toast.LENGTH_SHORT).show();

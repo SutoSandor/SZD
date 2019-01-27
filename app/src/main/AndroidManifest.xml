@@ -47,7 +47,8 @@
             android:label="@string/title_activity_kapcsolat" />
         <activity android:name=".AdminFoActivity" />
         <activity android:name=".RendelesActivity" />
-        <activity android:name=".UjEtelActivity"></activity>
+        <activity android:name=".UjEtelActivity" />
+        <activity android:name=".FoglalasActivity"></activity>
     </application>
 
 </manifest>

@@ -43,11 +43,16 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/lista"/>
-    <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/lista"
+        android:scrollbars = "vertical"/>
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/update"></LinearLayout>
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/update"></LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

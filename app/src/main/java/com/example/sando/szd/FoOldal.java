@@ -18,7 +18,7 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
-public class FoOldal extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class FoOldal extends AppCompatActivity{
     public Toolbar toolbar;
     public TabLayout tabLayout;
     public ViewPager pager;
@@ -29,21 +29,6 @@ public class FoOldal extends AppCompatActivity implements NavigationView.OnNavig
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fo_oldal);
         init();
-
-        //menu
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawer,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
 
         bejelentkezes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +48,12 @@ public class FoOldal extends AppCompatActivity implements NavigationView.OnNavig
                 startRendeles();
             }
         });
+        foglalas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startFoglalas();
+            }
+        });
     }
 
     public void init(){
@@ -73,26 +64,6 @@ public class FoOldal extends AppCompatActivity implements NavigationView.OnNavig
         rendeles = findViewById(R.id.rendeles);
         kapcsolat = findViewById(R.id.kapcsolat);
         bejelentkezes = findViewById(R.id.bejelentkezes);
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        if (menuItem.getItemId() == R.id.nav_rendel){
-            startRendeles();
-        }
-        else if(menuItem.getItemId() == R.id.nav_foglal){
-
-        }
-        else if(menuItem.getItemId() == R.id.nav_kapcsolat){
-            startKapcsolat();
-        }
-        else if(menuItem.getItemId() == R.id.nav_login){
-            startBejelentkezes();
-        }
-
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     public void startRendeles(){
@@ -107,6 +78,11 @@ public class FoOldal extends AppCompatActivity implements NavigationView.OnNavig
     }
     public void startBejelentkezes(){
         Intent intent = new Intent(FoOldal.this, BeActivity.class);
+        startActivity(intent);
+        finish();
+    }
+    public void startFoglalas(){
+        Intent intent = new Intent(FoOldal.this, FoglalasActivity.class);
         startActivity(intent);
         finish();
     }
