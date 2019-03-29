@@ -3,6 +3,7 @@ package com.example.sando.szd;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -44,7 +45,7 @@ public class Adatbazis extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + FELH_TABLENAME + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, FELHASZNALONEV TEXT, JELSZO TEXT, JOGOSULTSAG TEXT)");
         db.execSQL("CREATE TABLE " + REND_TABLENAME + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, ETEL_NEV TEXT, AR DOUBLE, KEP TEXT, LEIRAS TEXT)");
-        db.execSQL("CREATE TABLE " + LEREND_TABLENAME + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, ETEL_ID INTEGER, FELH_ID INTEGER, DATUM DATE)");
+            db.execSQL("CREATE TABLE " + LEREND_TABLENAME + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, ETEL_ID INTEGER, FELH_ID INTEGER, DATUM DATE)");
     }
 
     @Override
@@ -87,7 +88,7 @@ public class Adatbazis extends SQLiteOpenHelper {
             return true;
         }
     }
-    public boolean Rendeles(String felh_id, String etel_id){
+    public boolean Rendeles(String felh_id, String etel_id){;
         SQLiteDatabase db = this.getWritableDatabase();
         Calendar calendar = Calendar.getInstance();
         Date currentDate = calendar.getTime();
